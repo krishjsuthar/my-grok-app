@@ -1,0 +1,39 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "LineSight",
+      "hasCanvas": true,
+      "bodyTextLen": 766,
+      "bodyTextHash": "f61a36f19f037316b9dea4e960346c6bca44c0fa8e8e47a616268c0938b2a5a2",
+      "bodyTextPrefix": "LineSightQC HuskyLens 2 · RDK X5 8GB · MSME line DEMO LINE Stati",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "LineSight",
+      "hasCanvas": true,
+      "bodyTextLen": 727,
+      "bodyTextHash": "72f6aaf7c8bd1a62b811ec97db4b52c9cfc91a8fef2ab324829ff9d1c1e0660d",
+      "bodyTextPrefix": "LineSight DEMO LINE METAL FABRICATION Stamped bracket Hole prese",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [
+    "BRAND WARNING: this looks like a game/canvas app but src/lib/og/site.json is missing \"type\": \"x:game\". X uses og:type=x:game to present the unfurl as a game card — set it in /workspace/src/lib/og/site.json per /workspace/.grok/skills/og/SKILL.md. Do not invent x:type or overload twitter:card as the game signal.",
+    "BRAND WARNING: this looks like a game/canvas app but /workspace/public/x-banner.jpg is missing. Games need a 50:11 X feed card (1200×264 JPEG) at public/x-banner.jpg — open /workspace/.grok/skills/og/SKILL.md and finish the brand-asset pass."
+  ],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
