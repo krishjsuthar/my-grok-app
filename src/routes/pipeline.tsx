@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardHint, CardTitle } from "@/components/ui/card";
 import { PIPELINE_STAGES } from "@/lib/qc/hardware";
 import { Separator } from "@/components/ui/separator";
@@ -8,13 +10,21 @@ export const Route = createFileRoute("/pipeline")({ component: PipelinePage });
 function PipelinePage() {
   return (
     <div className="space-y-6">
-      <header>
-        <p className="text-xs tracking-wide text-muted uppercase">Architecture</p>
-        <h1 className="text-2xl font-medium tracking-tight">Edge pipeline</h1>
-        <p className="mt-1 max-w-2xl text-sm text-muted">
-          HuskyLens 2 sees the unit. RDK X5 8GB owns policy, specs and the reject gate. LineSight
-          is the operator console — this preview runs a faithful demo of that chain.
-        </p>
+      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs tracking-wide text-muted uppercase">Architecture</p>
+          <h1 className="text-2xl font-medium tracking-tight">Edge pipeline</h1>
+          <p className="mt-1 max-w-2xl text-sm text-muted">
+            HuskyLens 2 sees the unit. RDK X5 8GB owns policy, specs and the reject gate. LineSight
+            is the operator console — this preview runs a faithful demo of that chain.
+          </p>
+        </div>
+        <Button variant="outline" asChild>
+          <a href="/LineSight-Pipeline-Synthesis.pdf" download>
+            <Download />
+            Synthesis report
+          </a>
+        </Button>
       </header>
 
       <div className="grid gap-3 md:grid-cols-2">

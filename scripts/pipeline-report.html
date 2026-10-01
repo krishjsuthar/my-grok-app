@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>LineSight — Pipeline Synthesis Report</title>
+  <style>
+    @page { size: A4; margin: 18mm 16mm 20mm; }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0e100f;
+      color: #e8ebe4;
+      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+    }
+    h1, h2, h3 { font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
+    h1 { font-size: 26pt; margin: 0 0 6px; line-height: 1.15; }
+    h2 { font-size: 13pt; margin: 22px 0 8px; color: #c5d0c2; border-bottom: 1px solid rgba(232,235,228,0.12); padding-bottom: 4px; }
+    h3 { font-size: 11pt; margin: 12px 0 4px; }
+    p { margin: 0 0 8px; }
+    .muted { color: #8b9288; }
+    .subtle { color: #5f6560; }
+    .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
+    .kicker { font-size: 8pt; letter-spacing: 0.16em; text-transform: uppercase; color: #8b9288; }
+    .cover {
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      page-break-after: always;
+      padding-top: 28mm;
+    }
+    .reticle {
+      width: 28px; height: 28px;
+      border: 1px solid #c5d0c2;
+      position: relative;
+      margin-bottom: 18px;
+    }
+    .reticle:before, .reticle:after {
+      content: ""; position: absolute; background: #c5d0c2;
+    }
+    .reticle:before { left: 6px; right: 6px; top: 50%; height: 1px; }
+    .reticle:after { top: 6px; bottom: 6px; left: 50%; width: 1px; }
+    .rule { height: 1px; background: rgba(232,235,228,0.14); margin: 16px 0; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .card {
+      background: #171a18;
+      border: 1px solid rgba(232,235,228,0.10);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 9pt; }
+    th {
+      text-align: left; font-weight: 500; color: #8b9288;
+      border-bottom: 1px solid rgba(232,235,228,0.14);
+      padding: 6px 6px 6px 0; font-size: 8pt; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    td { padding: 7px 6px 7px 0; border-bottom: 1px solid rgba(232,235,228,0.08); vertical-align: top; }
+    .stage {
+      display: grid;
+      grid-template-columns: 36px 1fr 140px;
+      gap: 10px;
+      align-items: start;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(232,235,228,0.08);
+    }
+    .num { font-family: "IBM Plex Mono", monospace; color: #5f6560; font-size: 9pt; }
+    .avoid { page-break-inside: avoid; }
+    .footer-meta { font-size: 8pt; color: #5f6560; }
+    ul { margin: 4px 0 8px 16px; padding: 0; }
+    li { margin: 0 0 3px; }
+    .tag {
+      display: inline-block; font-size: 8pt; padding: 1px 7px; border-radius: 999px;
+      background: rgba(107,154,114,0.16); color: #6b9a72;
+    }
+    .fail { background: rgba(196,92,74,0.16); color: #c45c4a; }
+    .hold { background: rgba(176,138,74,0.16); color: #b08a4a; }
+    .flow {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      font-size: 8.5pt; margin: 10px 0 14px;
+    }
+    .chip {
+      background: #1e221f; border: 1px solid rgba(232,235,228,0.12);
+      border-radius: 6px; padding: 6px 8px; white-space: nowrap;
+    }
+    .arrow { color: #8b9288; }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <div>
+      <div class="reticle"></div>
+      <p class="kicker">LineSight QC · Technical synthesis</p>
+      <h1>Edge AI quality pipeline<br/>for MSME production lines</h1>
+      <p class="muted" style="max-width: 420px; margin-top: 12px;">
+        Hardware and software synthesis of DFRobot HuskyLens 2 (6 TOPS) on
+        D-Robotics RDK X5 8GB (10 TOPS BPU), with LineSight as the operator console.
+      </p>
+      <div class="rule"></div>
+      <div class="grid-3">
+        <div>
+          <p class="kicker">Sensor</p>
+          <p>HuskyLens 2<br/><span class="muted">Kendryte K230 · SEN0638</span></p>
+        </div>
+        <div>
+          <p class="kicker">Orchestrator</p>
+          <p>RDK X5 8GB<br/><span class="muted">Sunrise 5 · Ubuntu 22.04</span></p>
+        </div>
+        <div>
+          <p class="kicker">Console</p>
+          <p>LineSight<br/><span class="muted">Pass / fail / hold · CAPA</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-meta">
+      Document LS-SYN-001 · 2 October 2026 · Demo-line architecture · Not a six-figure AOI cell
+    </div>
+  </section>
+
+  <h2>1. Purpose</h2>
+  <p>
+    MSME shops (textiles, bottled FMCG, stamped metal, SMT, ceramics, carton print) need
+    100% visual gates without a dedicated AOI cell. LineSight splits work three ways:
+  </p>
+  <ul>
+    <li><strong>HuskyLens 2</strong> sees the unit — onboard YOLO, classification, instance segmentation, OCR, barcode, and self-learning.</li>
+    <li><strong>RDK X5 8GB</strong> owns policy — pixel-to-mm, spec limits, AQL sampling, GPIO / CAN reject.</li>
+    <li><strong>LineSight</strong> is the operator surface — lot genealogy, override, teach set, on-demand diagnosis.</li>
+  </ul>
+  <p class="muted">
+    This document is the synthesis of that pipeline: devices, stages, protocols, MSME recipes,
+    and the software that the live console implements. The in-browser LineSight run is a
+    faithful demo of the chain (simulated HuskyLens feed). Plant deployment uses the same
+    stages over USB 3.0 / UART against real hardware.
+  </p>
+
+  <h2>2. Hardware stack</h2>
+  <div class="grid-2 avoid">
+    <div class="card">
+      <p class="kicker">Sensor</p>
+      <h3>HuskyLens 2</h3>
+      <table>
+        <tr><td class="muted">SKU</td><td>DFRobot SEN0638 / SEN0638-TF</td></tr>
+        <tr><td class="muted">SoC</td><td>Kendryte K230 dual-core 1.6 GHz</td></tr>
+        <tr><td class="muted">NPU</td><td>6 TOPS</td></tr>
+        <tr><td class="muted">Memory</td><td>1 GB LPDDR4 · 8 GB eMMC/TF</td></tr>
+        <tr><td class="muted">Imager</td><td>GC2093 2 MP, 1/2.9", 60 fps</td></tr>
+        <tr><td class="muted">Panel</td><td>2.4" IPS 640×480 capacitive</td></tr>
+        <tr><td class="muted">I/O</td><td>USB-C, Gravity 4-pin UART/I2C, TF</td></tr>
+        <tr><td class="muted">Power</td><td>3.3–5 V · 1.5–3 W</td></tr>
+        <tr><td class="muted">Software</td><td>20+ models, custom YOLO, MCP server</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <p class="kicker">Orchestrator</p>
+      <h3>RDK X5 8GB</h3>
+      <table>
+        <tr><td class="muted">Board</td><td>D-Robotics RDK X5 8G</td></tr>
+        <tr><td class="muted">CPU</td><td>8× Cortex-A55 @ 1.5 GHz</td></tr>
+        <tr><td class="muted">BPU</td><td>Bayes 10 TOPS (INT8)</td></tr>
+        <tr><td class="muted">GPU</td><td>32 GFLOPS</td></tr>
+        <tr><td class="muted">RAM</td><td>8 GB LPDDR4</td></tr>
+        <tr><td class="muted">OS</td><td>Ubuntu 22.04</td></tr>
+        <tr><td class="muted">Cameras</td><td>2× 4-lane MIPI CSI (optional 2nd view)</td></tr>
+        <tr><td class="muted">Host</td><td>4× USB 3.0 Type-A (HuskyLens)</td></tr>
+        <tr><td class="muted">Actuate</td><td>GPIO, CAN FD reject / press interlock</td></tr>
+        <tr><td class="muted">Net</td><td>GbE, Wi-Fi 6, BT 5.4</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:10px;">
+    Combined edge compute: <span class="mono">6 TOPS (K230) + 10 TOPS (X5 BPU) = 16 TOPS</span> on the line,
+    no cloud round-trip per unit. Optional second MIPI camera on the X5 covers top + side
+    without a second HuskyLens.
+  </p>
+
+  <h2>3. Six-stage pipeline</h2>
+  <div class="flow">
+    <span class="chip">01 Capture</span><span class="arrow">→</span>
+    <span class="chip">02 Edge vision</span><span class="arrow">→</span>
+    <span class="chip">03 Transport</span><span class="arrow">→</span>
+    <span class="chip">04 Fusion & policy</span><span class="arrow">→</span>
+    <span class="chip">05 Verdict</span><span class="arrow">→</span>
+    <span class="chip">06 Reasoning</span>
+  </div>
+
+  <div class="stage avoid">
+    <div class="num">01</div>
+    <div>
+      <strong>Capture</strong>
+      <p class="muted">GC2093 2 MP at 60 fps. Fill LEDs on the HuskyLens 2; optional microscope lens for SMT pads and print register. Exposure held constant per recipe so shade ΔE and fill-level pixels stay comparable across a lot.</p>
+    </div>
+    <div class="muted">GC2093 2 MP</div>
+  </div>
+  <div class="stage avoid">
+    <div class="num">02</div>
+    <div>
+      <strong>Edge vision</strong>
+      <p class="muted">K230 runs the recipe’s model mix locally: object recognition, classification, instance segmentation, color, OCR, barcode/QR, object tracking, and the self-learning classifier. Output is blocks (xywh, label, confidence) plus optional MCP semantic frames — not a raw video dump.</p>
+    </div>
+    <div class="muted">HuskyLens 2 · 6 TOPS</div>
+  </div>
+  <div class="stage avoid">
+    <div class="num">03</div>
+    <div>
+      <strong>Transport</strong>
+      <p class="muted">USB 3.0 for stills / MJPEG when needed; Gravity UART (115200, HuskyLens V2 protocol 0x55 0xAA) for blocks and arrows. Typical inspect-path latency 5–8 ms on the demo line. Zero drops is the gate for a production link.</p>
+    </div>
+    <div class="muted">USB 3.0 / UART 115200</div>
+  </div>
+  <div class="stage avoid">
+    <div class="num">04</div>
+    <div>
+      <strong>Fusion & policy</strong>
+      <p class="muted">RDK X5 applies homography (pixel → mm), spec min/max, hole-count / fill-ml calibration, AQL skip-lot, and SPC. BPU can fuse a second MIPI view. Reject pulse on GPIO or CAN FD to the solenoid / press. This is where MSME mix lives: one image, many SKUs.</p>
+    </div>
+    <div class="muted">RDK X5 BPU · 10 TOPS</div>
+  </div>
+  <div class="stage avoid">
+    <div class="num">05</div>
+    <div>
+      <strong>Verdict</strong>
+      <p class="muted">LineSight stamps <span class="tag">pass</span> <span class="tag fail">fail</span> <span class="tag hold">hold</span>. Operator may override. Unit joins lot genealogy with cycle time, score, detections and measurements. Hold is for borderline confidence, not a silent pass.</p>
+    </div>
+    <div class="muted">LineSight console</div>
+  </div>
+  <div class="stage avoid">
+    <div class="num">06</div>
+    <div>
+      <strong>Reasoning</strong>
+      <p class="muted">On operator request only: Grok reads the fail packet (recipe, detections, specs) and returns Cause / Process / Operator / CAPA. If the xAI key is quota-blocked, an on-device policy note runs the same four-line shape from the recipe rules. Never called per frame.</p>
+    </div>
+    <div class="muted">Grok MCP · on-demand</div>
+  </div>
+
+  <h2>4. Protocol and data</h2>
+  <p>HuskyLens 2 binary frame (V2 protocol):</p>
+  <p class="mono muted">0x55 0xAA | CMD | ALGO_ID | LEN | DATA | CHK</p>
+  <p>Algorithm IDs used on this line: object recognition (2), tracking (3), color (4), classification (5), self-learning (6), instance seg (7), OCR (11), barcode / QR / tag. LineSight consumes the decoded blocks as:</p>
+  <p class="mono muted">{ id, label, x, y, w, h, confidence, kind, severity? }</p>
+  <p>
+    Measurements are policy, not camera: each recipe declares specMin / specMax / target.
+    A unit fails if a critical defect block fires or any measurement is out of spec.
+    Score starts at 100 and is penalised per defect and OOS channel.
+  </p>
+
+  <h2>5. MSME inspection recipes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Sector</th><th>SKU</th><th>Cycle</th><th>HuskyLens algos</th><th>RDK X5 role</th><th>Critical defects</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Textiles<br/><span class="muted">Woven fabric</span></td>
+        <td class="mono">TX-WOV-240</td>
+        <td class="mono">420 ms</td>
+        <td>Instance seg, color, classify</td>
+        <td>Shade ΔE vs master, defect area vs GSM</td>
+        <td>Pin hole, weft stain, shade band</td>
+      </tr>
+      <tr>
+        <td>Food & beverage<br/><span class="muted">Bottled FMCG</span></td>
+        <td class="mono">PK-BTL-500</td>
+        <td class="mono">280 ms</td>
+        <td>Object, OCR, color, barcode</td>
+        <td>Fill px→ml, cap GPIO reject</td>
+        <td>Underfill, missing cap</td>
+      </tr>
+      <tr>
+        <td>Metal fabrication<br/><span class="muted">Stamped bracket</span></td>
+        <td class="mono">MT-BRK-08</td>
+        <td class="mono">360 ms</td>
+        <td>Object, instance seg, classify</td>
+        <td>Homography, hole count, CAN to press</td>
+        <td>Missing hole, length OOS</td>
+      </tr>
+      <tr>
+        <td>Electronics<br/><span class="muted">SMT board</span></td>
+        <td class="mono">EL-PCB-12A</td>
+        <td class="mono">510 ms</td>
+        <td>Classify, object, self-learn</td>
+        <td>BOM overlay, polarity map, hold for rework</td>
+        <td>Missing 0805, IC polarity</td>
+      </tr>
+      <tr>
+        <td>Ceramics<br/><span class="muted">Glazed tile</span></td>
+        <td class="mono">CR-TIL-300</td>
+        <td class="mono">390 ms</td>
+        <td>Instance seg, color, classify</td>
+        <td>Crack length vs class, kiln feedback</td>
+        <td>Hairline crack, edge chip</td>
+      </tr>
+      <tr>
+        <td>Packaging print<br/><span class="muted">Carton print</span></td>
+        <td class="mono">PR-CTN-A4</td>
+        <td class="mono">310 ms</td>
+        <td>OCR, barcode, QR, object</td>
+        <td>GS1 grade, colour-to-colour register</td>
+        <td>Unreadable barcode, wrong batch text</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="muted">Sampling examples: 100% fill + cap with 1/10 OCR audit (FMCG); 100% holes with 5-pc/hr CMM audit (metal); 100% first-article then 100% AOI (SMT).</p>
+
+  <h2>6. LineSight software map</h2>
+  <div class="grid-2 avoid">
+    <div class="card">
+      <h3>Surfaces</h3>
+      <ul>
+        <li><strong>Station</strong> — live HuskyLens viewport, pipeline rail, verdict, diagnose</li>
+        <li><strong>Pipeline</strong> — hardware topology and this synthesis</li>
+        <li><strong>Lots</strong> — yield, score trend, defect Pareto, genealogy</li>
+        <li><strong>Recipes</strong> — six MSME SKUs, load onto the station</li>
+        <li><strong>Teach</strong> — gold / defect samples → K230 self-learn deploy</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Runtime rules</h3>
+      <ul>
+        <li>No accounts. Session state in memory (demo lot seeded).</li>
+        <li>Grok is user-initiated, 500-token cap, never per frame.</li>
+        <li>On 403 / missing key: on-device Cause / Process / Operator / CAPA.</li>
+        <li>Self-learn deploy gated at 4 gold + 4 defect (8+8 preferred).</li>
+        <li>Demo line is labelled as such — not a fake plant handshake.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>7. Plant wiring (when hardware is on the bench)</h2>
+  <ol>
+    <li>Power HuskyLens 2 from 5 V. Load the recipe model set (or custom YOLO from Model Hub).</li>
+    <li>USB 3.0 Host on RDK X5 ← HuskyLens 2 Type-C. UART 115200 on Gravity as fallback / block stream.</li>
+    <li>RDK X5 Ubuntu 22.04 service: decode protocol, apply recipe JSON, pulse GPIO/CAN on fail.</li>
+    <li>LineSight on the same board (or a shop PC) over HTTP to that service.</li>
+    <li>Reject solenoid / tower light on GPIO; press interlock on CAN FD for metal.</li>
+    <li>Teach gold/defect from the first-article lot; deploy to the K230 self-learning head.</li>
+  </ol>
+  <p class="muted">
+    Estimated station BOM (indicative, 2026): HuskyLens 2 ~USD 90, RDK X5 8GB board, 24 V reject
+    solenoid, enclosure, fill lighting. Well below a packaged AOI cell, which is the MSME constraint.
+  </p>
+
+  <h2>8. Why the split holds for MSME</h2>
+  <div class="grid-3 avoid">
+    <div class="card">
+      <h3>On-device first</h3>
+      <p class="muted">Classification and OCR stay on the K230. Bandwidth and privacy stay on the line. Cloud is not in the cycle-time path.</p>
+    </div>
+    <div class="card">
+      <h3>Board does policy</h3>
+      <p class="muted">Recipes, AQL and the reject pulse live on the X5. Swap SKU without retraining the whole stack. High mix, short runs.</p>
+    </div>
+    <div class="card">
+      <h3>LLM on demand</h3>
+      <p class="muted">Grok reads a fail packet only when an operator asks. Quota stays bounded. CAPA language matches a setter, not a data scientist.</p>
+    </div>
+  </div>
+
+  <h2>9. Open items for a live cell</h2>
+  <ul>
+    <li>Calibrate homography per nest (checkerboard still on first article).</li>
+    <li>Map GPIO bit to the actual reject valve / tower; debounce 3-fail-in-10 as a line stop.</li>
+    <li>Balance teach sets (minimum 8 gold + 8 defect per class) before raising confidence thresholds.</li>
+    <li>Persist lots to the plant MES or a local Postgres when accounts exist; this demo does not.</li>
+    <li>Wire HuskyLens MCP to Grok only on the shop VLAN, never the public internet per frame.</li>
+  </ul>
+
+  <div class="rule"></div>
+  <p class="footer-meta">
+    LineSight LS-SYN-001 · Pipeline synthesis · HuskyLens 2 × RDK X5 8GB × MSME QC<br/>
+    Prepared for shop-floor review. Demo console implements stages 01–06 against a simulated feed.
+  </p>
+</body>
+</html>
