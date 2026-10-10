@@ -2,378 +2,386 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>LineSight — Pipeline Synthesis Report</title>
+  <title>LineSight Technical Report LS-TR-002</title>
   <style>
-    @page { size: A4; margin: 18mm 16mm 20mm; }
+    @font-face {
+      font-family: "Times New Roman";
+      src: url("fonts/Tinos-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Times New Roman";
+      src: url("fonts/Tinos-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Times New Roman";
+      src: url("fonts/Tinos-Italic.ttf") format("truetype");
+      font-weight: 400;
+      font-style: italic;
+    }
+    @font-face {
+      font-family: "Times New Roman";
+      src: url("fonts/Tinos-BoldItalic.ttf") format("truetype");
+      font-weight: 700;
+      font-style: italic;
+    }
+    @page {
+      size: A4;
+      margin: 22mm 22mm 20mm 22mm;
+      @bottom-center {
+        content: counter(page);
+        font-family: "Times New Roman", "Liberation Serif", serif;
+        font-size: 11pt;
+      }
+    }
     * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
-      background: #0e100f;
-      color: #e8ebe4;
-      font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+      background: #ffffff;
+      color: #000000;
+      font-family: "Times New Roman", "Liberation Serif", serif;
+      font-size: 12pt;
+      line-height: 1.5;
+    }
+    h1, h2, h3, h4 { font-weight: 700; line-height: 1.25; page-break-after: avoid; }
+    h1 { font-size: 16pt; text-align: center; margin: 0 0 8pt; }
+    h2 { font-size: 14pt; margin: 16pt 0 8pt; text-align: left; }
+    h3 { font-size: 12pt; margin: 12pt 0 6pt; }
+    p { margin: 0 0 8pt; text-align: justify; hyphens: auto; }
+    .center { text-align: center; }
+    .titleblock { margin-top: 28mm; page-break-after: always; }
+    .subtitle { font-size: 13pt; text-align: center; margin: 10pt 0; }
+    .meta { text-align: center; margin: 4pt 0; }
+    .rule { border: none; border-top: 1px solid #000; margin: 14pt 0; }
+    .abstract-label { font-weight: 700; }
+    ul, ol { margin: 4pt 0 8pt 18pt; padding: 0; }
+    li { margin: 0 0 4pt; text-align: justify; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8pt 0 12pt;
       font-size: 10.5pt;
-      line-height: 1.45;
+      line-height: 1.3;
+      page-break-inside: avoid;
     }
-    h1, h2, h3 { font-weight: 500; letter-spacing: -0.02em; text-wrap: balance; }
-    h1 { font-size: 26pt; margin: 0 0 6px; line-height: 1.15; }
-    h2 { font-size: 13pt; margin: 22px 0 8px; color: #c5d0c2; border-bottom: 1px solid rgba(232,235,228,0.12); padding-bottom: 4px; }
-    h3 { font-size: 11pt; margin: 12px 0 4px; }
-    p { margin: 0 0 8px; }
-    .muted { color: #8b9288; }
-    .subtle { color: #5f6560; }
-    .mono { font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace; }
-    .kicker { font-size: 8pt; letter-spacing: 0.16em; text-transform: uppercase; color: #8b9288; }
-    .cover {
-      min-height: 250mm;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      page-break-after: always;
-      padding-top: 28mm;
+    th, td {
+      border: 1px solid #000;
+      padding: 4pt 5pt;
+      vertical-align: top;
+      text-align: left;
     }
-    .reticle {
-      width: 28px; height: 28px;
-      border: 1px solid #c5d0c2;
-      position: relative;
-      margin-bottom: 18px;
+    th { font-weight: 700; background: #fff; }
+    caption {
+      caption-side: top;
+      text-align: left;
+      font-weight: 700;
+      margin-bottom: 4pt;
+      font-size: 11pt;
     }
-    .reticle:before, .reticle:after {
-      content: ""; position: absolute; background: #c5d0c2;
-    }
-    .reticle:before { left: 6px; right: 6px; top: 50%; height: 1px; }
-    .reticle:after { top: 6px; bottom: 6px; left: 50%; width: 1px; }
-    .rule { height: 1px; background: rgba(232,235,228,0.14); margin: 16px 0; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .card {
-      background: #171a18;
-      border: 1px solid rgba(232,235,228,0.10);
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-    table { width: 100%; border-collapse: collapse; font-size: 9pt; }
-    th {
-      text-align: left; font-weight: 500; color: #8b9288;
-      border-bottom: 1px solid rgba(232,235,228,0.14);
-      padding: 6px 6px 6px 0; font-size: 8pt; letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    td { padding: 7px 6px 7px 0; border-bottom: 1px solid rgba(232,235,228,0.08); vertical-align: top; }
-    .stage {
-      display: grid;
-      grid-template-columns: 36px 1fr 140px;
-      gap: 10px;
-      align-items: start;
-      padding: 9px 0;
-      border-bottom: 1px solid rgba(232,235,228,0.08);
-    }
-    .num { font-family: "IBM Plex Mono", monospace; color: #5f6560; font-size: 9pt; }
-    .avoid { page-break-inside: avoid; }
-    .footer-meta { font-size: 8pt; color: #5f6560; }
-    ul { margin: 4px 0 8px 16px; padding: 0; }
-    li { margin: 0 0 3px; }
-    .tag {
-      display: inline-block; font-size: 8pt; padding: 1px 7px; border-radius: 999px;
-      background: rgba(107,154,114,0.16); color: #6b9a72;
-    }
-    .fail { background: rgba(196,92,74,0.16); color: #c45c4a; }
-    .hold { background: rgba(176,138,74,0.16); color: #b08a4a; }
-    .flow {
-      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-      font-size: 8.5pt; margin: 10px 0 14px;
-    }
-    .chip {
-      background: #1e221f; border: 1px solid rgba(232,235,228,0.12);
-      border-radius: 6px; padding: 6px 8px; white-space: nowrap;
-    }
-    .arrow { color: #8b9288; }
+    .eq { text-align: center; margin: 8pt 0 8pt; font-style: italic; }
+    .note { font-size: 11pt; }
+    .hang { padding-left: 18pt; text-indent: -18pt; margin: 0 0 6pt; text-align: left; }
+    .keep { page-break-inside: avoid; }
   </style>
 </head>
 <body>
-  <section class="cover">
-    <div>
-      <div class="reticle"></div>
-      <p class="kicker">LineSight QC · Technical synthesis</p>
-      <h1>Edge AI quality pipeline<br/>for MSME production lines</h1>
-      <p class="muted" style="max-width: 420px; margin-top: 12px;">
-        Hardware and software synthesis of DFRobot HuskyLens 2 (6 TOPS) on
-        D-Robotics RDK X5 8GB (10 TOPS BPU), with LineSight as the operator console.
-      </p>
-      <div class="rule"></div>
-      <div class="grid-3">
-        <div>
-          <p class="kicker">Sensor</p>
-          <p>HuskyLens 2<br/><span class="muted">Kendryte K230 · SEN0638</span></p>
-        </div>
-        <div>
-          <p class="kicker">Orchestrator</p>
-          <p>RDK X5 8GB<br/><span class="muted">Sunrise 5 · Ubuntu 22.04</span></p>
-        </div>
-        <div>
-          <p class="kicker">Console</p>
-          <p>LineSight<br/><span class="muted">Pass / fail / hold · CAPA</span></p>
-        </div>
-      </div>
-    </div>
-    <div class="footer-meta">
-      Document LS-SYN-001 · 2 October 2026 · Demo-line architecture · Not a six-figure AOI cell
-    </div>
-  </section>
 
-  <h2>1. Purpose</h2>
-  <p>
-    MSME shops (textiles, bottled FMCG, stamped metal, SMT, ceramics, carton print) need
-    100% visual gates without a dedicated AOI cell. LineSight splits work three ways:
-  </p>
-  <ul>
-    <li><strong>HuskyLens 2</strong> sees the unit — onboard YOLO, classification, instance segmentation, OCR, barcode, and self-learning.</li>
-    <li><strong>RDK X5 8GB</strong> owns policy — pixel-to-mm, spec limits, AQL sampling, GPIO / CAN reject.</li>
-    <li><strong>LineSight</strong> is the operator surface — lot genealogy, override, teach set, on-demand diagnosis.</li>
-  </ul>
-  <p class="muted">
-    This document is the synthesis of that pipeline: devices, stages, protocols, MSME recipes,
-    and the software that the live console implements. The in-browser LineSight run is a
-    faithful demo of the chain (simulated HuskyLens feed). Plant deployment uses the same
-    stages over USB 3.0 / UART against real hardware.
-  </p>
+<section class="titleblock">
+  <p class="center" style="margin-top: 18mm;">Technical Report LS-TR-002</p>
+  <hr class="rule" />
+  <h1>Edge Vision Quality Inspection for Micro, Small and Medium Enterprises</h1>
+  <p class="subtitle">A Pipeline Synthesis of DFRobot HuskyLens&nbsp;2 and D-Robotics RDK&nbsp;X5, with the LineSight Operator Console</p>
+  <hr class="rule" />
+  <p class="meta">Abstract · Approach · Literature Review · Methodology · Analysis · Conclusion</p>
+  <p class="meta" style="margin-top: 28pt;">Prepared for shop-floor and technical review</p>
+  <p class="meta">October 2026</p>
+  <p class="meta" style="margin-top: 36pt;">LineSight</p>
+  <p class="center note" style="margin-top: 36pt;">This report describes an architecture and a labelled demonstration. It is not a claim of a completed plant trial, and it is not a substitute for a calibrated first-article study on the physical line.</p>
+</section>
 
-  <h2>2. Hardware stack</h2>
-  <div class="grid-2 avoid">
-    <div class="card">
-      <p class="kicker">Sensor</p>
-      <h3>HuskyLens 2</h3>
-      <table>
-        <tr><td class="muted">SKU</td><td>DFRobot SEN0638 / SEN0638-TF</td></tr>
-        <tr><td class="muted">SoC</td><td>Kendryte K230 dual-core 1.6 GHz</td></tr>
-        <tr><td class="muted">NPU</td><td>6 TOPS</td></tr>
-        <tr><td class="muted">Memory</td><td>1 GB LPDDR4 · 8 GB eMMC/TF</td></tr>
-        <tr><td class="muted">Imager</td><td>GC2093 2 MP, 1/2.9", 60 fps</td></tr>
-        <tr><td class="muted">Panel</td><td>2.4" IPS 640×480 capacitive</td></tr>
-        <tr><td class="muted">I/O</td><td>USB-C, Gravity 4-pin UART/I2C, TF</td></tr>
-        <tr><td class="muted">Power</td><td>3.3–5 V · 1.5–3 W</td></tr>
-        <tr><td class="muted">Software</td><td>20+ models, custom YOLO, MCP server</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <p class="kicker">Orchestrator</p>
-      <h3>RDK X5 8GB</h3>
-      <table>
-        <tr><td class="muted">Board</td><td>D-Robotics RDK X5 8G</td></tr>
-        <tr><td class="muted">CPU</td><td>8× Cortex-A55 @ 1.5 GHz</td></tr>
-        <tr><td class="muted">BPU</td><td>Bayes 10 TOPS (INT8)</td></tr>
-        <tr><td class="muted">GPU</td><td>32 GFLOPS</td></tr>
-        <tr><td class="muted">RAM</td><td>8 GB LPDDR4</td></tr>
-        <tr><td class="muted">OS</td><td>Ubuntu 22.04</td></tr>
-        <tr><td class="muted">Cameras</td><td>2× 4-lane MIPI CSI (optional 2nd view)</td></tr>
-        <tr><td class="muted">Host</td><td>4× USB 3.0 Type-A (HuskyLens)</td></tr>
-        <tr><td class="muted">Actuate</td><td>GPIO, CAN FD reject / press interlock</td></tr>
-        <tr><td class="muted">Net</td><td>GbE, Wi-Fi 6, BT 5.4</td></tr>
-      </table>
-    </div>
-  </div>
-  <p class="muted" style="margin-top:10px;">
-    Combined edge compute: <span class="mono">6 TOPS (K230) + 10 TOPS (X5 BPU) = 16 TOPS</span> on the line,
-    no cloud round-trip per unit. Optional second MIPI camera on the X5 covers top + side
-    without a second HuskyLens.
-  </p>
+<h2>Abstract</h2>
+<p><span class="abstract-label">Abstract. </span>Packaged automated optical inspection remains out of reach for many micro, small and medium manufacturing shops. The work they actually do — grey cloth, filled bottles, stamped brackets, small SMT boards, glazed tile, and printed cartons — still depends on a human eye at the end of a short run. This report synthesises a three-tier edge pipeline intended for that setting. A DFRobot HuskyLens&nbsp;2 camera, built on the Kendryte K230 with a 6&nbsp;TOPS accelerator and a 2&nbsp;megapixel GC2093 sensor, performs on-device recognition, classification, instance segmentation, colour, optical character recognition, barcode reading and self-learning. A D-Robotics RDK&nbsp;X5 board with 8&nbsp;GB of memory and a 10&nbsp;TOPS Bayes BPU owns policy: pixel-to-millimetre homography, specification limits, sampling rules, and the reject pulse on GPIO or CAN&nbsp;FD. LineSight is the operator console. It records pass, fail and hold, keeps lot genealogy, accepts a teach set, and calls a language model only when a person asks for a cause and corrective action. The demonstration implements the same stages against a seeded simulator so the chain can be walked without hardware. Nominal generative fail rates on the six recipes lie between 5 and 10&nbsp;percent, with a 3&nbsp;percent hold rate on units that are not already failed. Cycle times lie between 280 and 510&nbsp;milliseconds, which is compatible with short MSME lines and is dominated by sensing and policy, not by the language model. The central claim is architectural. Classification and codes stay on the camera. Recipes and the reject gate stay on the board. Language is an on-demand note, not a per-frame service. The report reviews the inspection, detection and edge-computing literature that motivates this split, states the method in enough detail to reproduce the demonstration, and analyses throughput, decision rules, sector recipes and the limits of a simulated line.</p>
+<p><span class="abstract-label">Keywords. </span>automated optical inspection; edge artificial intelligence; HuskyLens&nbsp;2; RDK&nbsp;X5; micro, small and medium enterprises; acceptance sampling; statistical process control; self-learning classification; Model Context Protocol.</p>
 
-  <h2>3. Six-stage pipeline</h2>
-  <div class="flow">
-    <span class="chip">01 Capture</span><span class="arrow">→</span>
-    <span class="chip">02 Edge vision</span><span class="arrow">→</span>
-    <span class="chip">03 Transport</span><span class="arrow">→</span>
-    <span class="chip">04 Fusion & policy</span><span class="arrow">→</span>
-    <span class="chip">05 Verdict</span><span class="arrow">→</span>
-    <span class="chip">06 Reasoning</span>
-  </div>
+<h2>1. Approach</h2>
 
-  <div class="stage avoid">
-    <div class="num">01</div>
-    <div>
-      <strong>Capture</strong>
-      <p class="muted">GC2093 2 MP at 60 fps. Fill LEDs on the HuskyLens 2; optional microscope lens for SMT pads and print register. Exposure held constant per recipe so shade ΔE and fill-level pixels stay comparable across a lot.</p>
-    </div>
-    <div class="muted">GC2093 2 MP</div>
-  </div>
-  <div class="stage avoid">
-    <div class="num">02</div>
-    <div>
-      <strong>Edge vision</strong>
-      <p class="muted">K230 runs the recipe’s model mix locally: object recognition, classification, instance segmentation, color, OCR, barcode/QR, object tracking, and the self-learning classifier. Output is blocks (xywh, label, confidence) plus optional MCP semantic frames — not a raw video dump.</p>
-    </div>
-    <div class="muted">HuskyLens 2 · 6 TOPS</div>
-  </div>
-  <div class="stage avoid">
-    <div class="num">03</div>
-    <div>
-      <strong>Transport</strong>
-      <p class="muted">USB 3.0 for stills / MJPEG when needed; Gravity UART (115200, HuskyLens V2 protocol 0x55 0xAA) for blocks and arrows. Typical inspect-path latency 5–8 ms on the demo line. Zero drops is the gate for a production link.</p>
-    </div>
-    <div class="muted">USB 3.0 / UART 115200</div>
-  </div>
-  <div class="stage avoid">
-    <div class="num">04</div>
-    <div>
-      <strong>Fusion & policy</strong>
-      <p class="muted">RDK X5 applies homography (pixel → mm), spec min/max, hole-count / fill-ml calibration, AQL skip-lot, and SPC. BPU can fuse a second MIPI view. Reject pulse on GPIO or CAN FD to the solenoid / press. This is where MSME mix lives: one image, many SKUs.</p>
-    </div>
-    <div class="muted">RDK X5 BPU · 10 TOPS</div>
-  </div>
-  <div class="stage avoid">
-    <div class="num">05</div>
-    <div>
-      <strong>Verdict</strong>
-      <p class="muted">LineSight stamps <span class="tag">pass</span> <span class="tag fail">fail</span> <span class="tag hold">hold</span>. Operator may override. Unit joins lot genealogy with cycle time, score, detections and measurements. Hold is for borderline confidence, not a silent pass.</p>
-    </div>
-    <div class="muted">LineSight console</div>
-  </div>
-  <div class="stage avoid">
-    <div class="num">06</div>
-    <div>
-      <strong>Reasoning</strong>
-      <p class="muted">On operator request only: Grok reads the fail packet (recipe, detections, specs) and returns Cause / Process / Operator / CAPA. If the xAI key is quota-blocked, an on-device policy note runs the same four-line shape from the recipe rules. Never called per frame.</p>
-    </div>
-    <div class="muted">Grok MCP · on-demand</div>
-  </div>
+<h3>1.1 Problem</h3>
+<p>A quality gate has to answer a binary question under a time budget: does this unit leave the station, or does it not. Classical acceptance sampling answers a weaker question. It estimates whether a lot, already made, is good enough to ship, using a sample indexed by an acceptance quality limit (ISO 2859-1). That procedure is rational when inspection is expensive and when the defect, once made, cannot be removed unit by unit. It is a poor fit when the defect is visible, the unit is still on the belt, and the cost of a missed critical defect (a missing hole, an under-filled bottle, a reversed integrated circuit, an unreadable barcode) exceeds the cost of looking at every piece.</p>
+<p>Hundred-percent visual inspection by a person does look at every piece, and it fails in a different way. Vigilance drops, shade memory drifts across a shift, and a new operator does not carry the previous operator’s private standard. Packaged AOI cells fix the vigilance problem with controlled light, a calibrated camera and a model, but they are sold as a cell: enclosure, controller, reject mechanics, integration and a service contract. For a shop running several stock-keeping units a week, that cell is often larger than the process it would watch.</p>
+<p>The approach taken here is to keep hundred-percent looking, but to buy it as two small edge devices and a console, and to refuse any design in which a cloud round-trip sits inside the cycle time. The camera sees. The single-board computer decides against a recipe. The person remains the authority for override, teaching and corrective action. A language model may explain a fail. It does not vote on every frame.</p>
 
-  <h2>4. Protocol and data</h2>
-  <p>HuskyLens 2 binary frame (V2 protocol):</p>
-  <p class="mono muted">0x55 0xAA | CMD | ALGO_ID | LEN | DATA | CHK</p>
-  <p>Algorithm IDs used on this line: object recognition (2), tracking (3), color (4), classification (5), self-learning (6), instance seg (7), OCR (11), barcode / QR / tag. LineSight consumes the decoded blocks as:</p>
-  <p class="mono muted">{ id, label, x, y, w, h, confidence, kind, severity? }</p>
-  <p>
-    Measurements are policy, not camera: each recipe declares specMin / specMax / target.
-    A unit fails if a critical defect block fires or any measurement is out of spec.
-    Score starts at 100 and is penalised per defect and OOS channel.
-  </p>
+<h3>1.2 Design principles</h3>
+<p>Four principles fix the architecture.</p>
+<p>First, perception and policy are different jobs. A detector that reports a block — a label, a box and a confidence — has not decided whether the unit is legal. Legality is a specification: a minimum, a maximum, a count, a colour difference, a barcode grade. Those limits change when the stock-keeping unit changes. They should live in a recipe on the board, not inside a retrained network.</p>
+<p>Second, the scarce resource on an MSME line is labelled images, not theoretical accuracy on a public dataset. A self-learning head that can be taught from a handful of gold pieces and a handful of known defects is more useful than a heavier model that cannot be updated until the next engineer visit. The console therefore treats teaching as a first-class operation, and it refuses to deploy a head until a minimum set exists (four gold and four defect samples to arm the control; eight and eight as the preferred balance).</p>
+<p>Third, language is expensive and slow relative to a reject solenoid, and it is unnecessary on a pass. Diagnosis is operator-initiated, bounded (a short completion, not an open conversation per unit), and replaceable. If the remote model is refused or the key is absent, an on-device policy note still returns the same four lines: cause, process, operator action, and corrective and preventive action. The line does not stop because a quota did.</p>
+<p>Fourth, the demonstration must not pretend to be the plant. The in-browser LineSight station is a faithful model of the data contract — blocks, measurements, verdicts, lots — driven by a seeded generator. Hardware telemetry on that screen is a labelled demo line. The same stages, not the same pixels, are what would run against USB and UART on the bench.</p>
 
-  <h2>5. MSME inspection recipes</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Sector</th><th>SKU</th><th>Cycle</th><th>HuskyLens algos</th><th>RDK X5 role</th><th>Critical defects</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Textiles<br/><span class="muted">Woven fabric</span></td>
-        <td class="mono">TX-WOV-240</td>
-        <td class="mono">420 ms</td>
-        <td>Instance seg, color, classify</td>
-        <td>Shade ΔE vs master, defect area vs GSM</td>
-        <td>Pin hole, weft stain, shade band</td>
-      </tr>
-      <tr>
-        <td>Food & beverage<br/><span class="muted">Bottled FMCG</span></td>
-        <td class="mono">PK-BTL-500</td>
-        <td class="mono">280 ms</td>
-        <td>Object, OCR, color, barcode</td>
-        <td>Fill px→ml, cap GPIO reject</td>
-        <td>Underfill, missing cap</td>
-      </tr>
-      <tr>
-        <td>Metal fabrication<br/><span class="muted">Stamped bracket</span></td>
-        <td class="mono">MT-BRK-08</td>
-        <td class="mono">360 ms</td>
-        <td>Object, instance seg, classify</td>
-        <td>Homography, hole count, CAN to press</td>
-        <td>Missing hole, length OOS</td>
-      </tr>
-      <tr>
-        <td>Electronics<br/><span class="muted">SMT board</span></td>
-        <td class="mono">EL-PCB-12A</td>
-        <td class="mono">510 ms</td>
-        <td>Classify, object, self-learn</td>
-        <td>BOM overlay, polarity map, hold for rework</td>
-        <td>Missing 0805, IC polarity</td>
-      </tr>
-      <tr>
-        <td>Ceramics<br/><span class="muted">Glazed tile</span></td>
-        <td class="mono">CR-TIL-300</td>
-        <td class="mono">390 ms</td>
-        <td>Instance seg, color, classify</td>
-        <td>Crack length vs class, kiln feedback</td>
-        <td>Hairline crack, edge chip</td>
-      </tr>
-      <tr>
-        <td>Packaging print<br/><span class="muted">Carton print</span></td>
-        <td class="mono">PR-CTN-A4</td>
-        <td class="mono">310 ms</td>
-        <td>OCR, barcode, QR, object</td>
-        <td>GS1 grade, colour-to-colour register</td>
-        <td>Unreadable barcode, wrong batch text</td>
-      </tr>
-    </tbody>
-  </table>
-  <p class="muted">Sampling examples: 100% fill + cap with 1/10 OCR audit (FMCG); 100% holes with 5-pc/hr CMM audit (metal); 100% first-article then 100% AOI (SMT).</p>
+<h3>1.3 Three tiers</h3>
+<p>The pipeline has three tiers and six stages. Tier one is the HuskyLens&nbsp;2. Tier two is the RDK&nbsp;X5&nbsp;8GB. Tier three is LineSight. The stages are capture, edge vision, transport, fusion and policy, verdict, and reasoning. Sections 3.1 and 3.2 specify each tier and stage. The approach can be stated in one sentence: put the frame on the device that already has the sensor, put the specification on the device that already has the actuator, and put the explanation on a path the operator has to request.</p>
 
-  <h2>6. LineSight software map</h2>
-  <div class="grid-2 avoid">
-    <div class="card">
-      <h3>Surfaces</h3>
-      <ul>
-        <li><strong>Station</strong> — live HuskyLens viewport, pipeline rail, verdict, diagnose</li>
-        <li><strong>Pipeline</strong> — hardware topology and this synthesis</li>
-        <li><strong>Lots</strong> — yield, score trend, defect Pareto, genealogy</li>
-        <li><strong>Recipes</strong> — six MSME SKUs, load onto the station</li>
-        <li><strong>Teach</strong> — gold / defect samples → K230 self-learn deploy</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>Runtime rules</h3>
-      <ul>
-        <li>No accounts. Session state in memory (demo lot seeded).</li>
-        <li>Grok is user-initiated, 500-token cap, never per frame.</li>
-        <li>On 403 / missing key: on-device Cause / Process / Operator / CAPA.</li>
-        <li>Self-learn deploy gated at 4 gold + 4 defect (8+8 preferred).</li>
-        <li>Demo line is labelled as such — not a fake plant handshake.</li>
-      </ul>
-    </div>
-  </div>
+<h3>1.4 Scope</h3>
+<p>The scope is visual and near-visual inspection of discrete or quasi-discrete units on a short line: fabric on a loom-end table, a bottle, a bracket, a board, a tile, a carton. It is not metrology that replaces a coordinate measuring machine, not a safety-rated interlock design, and not a claim about medical or aerospace lots. Dimensional numbers in the recipes are policy examples. A plant deployment still requires a checkerboard or artefact calibration per nest, a gauge repeatability study, and a mapping from the board’s GPIO bit to the actual valve. Those steps are listed as open work in the conclusion. They are not smuggled in as results.</p>
 
-  <h2>7. Plant wiring (when hardware is on the bench)</h2>
-  <ol>
-    <li>Power HuskyLens 2 from 5 V. Load the recipe model set (or custom YOLO from Model Hub).</li>
-    <li>USB 3.0 Host on RDK X5 ← HuskyLens 2 Type-C. UART 115200 on Gravity as fallback / block stream.</li>
-    <li>RDK X5 Ubuntu 22.04 service: decode protocol, apply recipe JSON, pulse GPIO/CAN on fail.</li>
-    <li>LineSight on the same board (or a shop PC) over HTTP to that service.</li>
-    <li>Reject solenoid / tower light on GPIO; press interlock on CAN FD for metal.</li>
-    <li>Teach gold/defect from the first-article lot; deploy to the K230 self-learning head.</li>
-  </ol>
-  <p class="muted">
-    Estimated station BOM (indicative, 2026): HuskyLens 2 ~USD 90, RDK X5 8GB board, 24 V reject
-    solenoid, enclosure, fill lighting. Well below a packaged AOI cell, which is the MSME constraint.
-  </p>
+<h3>1.5 What this report contributes</h3>
+<p>The contribution is a synthesis, not a new detector. It binds published practice in object detection, few-shot teaching, acceptance sampling and statistical process control to a concrete, currently sold pair of boards, and it states the decision rule, the recipe table and the latency budget in a form an MSME engineer can argue with. The LineSight console is the executable form of that synthesis. The present document is the written form.</p>
 
-  <h2>8. Why the split holds for MSME</h2>
-  <div class="grid-3 avoid">
-    <div class="card">
-      <h3>On-device first</h3>
-      <p class="muted">Classification and OCR stay on the K230. Bandwidth and privacy stay on the line. Cloud is not in the cycle-time path.</p>
-    </div>
-    <div class="card">
-      <h3>Board does policy</h3>
-      <p class="muted">Recipes, AQL and the reject pulse live on the X5. Swap SKU without retraining the whole stack. High mix, short runs.</p>
-    </div>
-    <div class="card">
-      <h3>LLM on demand</h3>
-      <p class="muted">Grok reads a fail packet only when an operator asks. Quota stays bounded. CAPA language matches a setter, not a data scientist.</p>
-    </div>
-  </div>
+<h2>2. Literature Review</h2>
 
-  <h2>9. Open items for a live cell</h2>
-  <ul>
-    <li>Calibrate homography per nest (checkerboard still on first article).</li>
-    <li>Map GPIO bit to the actual reject valve / tower; debounce 3-fail-in-10 as a line stop.</li>
-    <li>Balance teach sets (minimum 8 gold + 8 defect per class) before raising confidence thresholds.</li>
-    <li>Persist lots to the plant MES or a local Postgres when accounts exist; this demo does not.</li>
-    <li>Wire HuskyLens MCP to Grok only on the shop VLAN, never the public internet per frame.</li>
-  </ul>
+<h3>2.1 Inspection is not the quality system</h3>
+<p>Shewhart’s economic control of quality of manufactured product separated assignable causes from chance variation and gave industry the control chart as a way to decide when a process, rather than a single piece, had changed (Shewhart, 1931). Deming later argued, sharply, that mass inspection is a poor substitute for building quality into the process (Deming, 1986). Both points survive contact with a camera. A vision gate that only sorts bad units into a red bin, and never changes the die, the filler or the kiln, has automated the symptom. Montgomery’s treatment of statistical quality control keeps the same distinction: acceptance sampling, process control charts, and designed experiments answer different questions and should not be collapsed into one number on a screen (Montgomery, 2019).</p>
+<p>ISO 2859-1 remains the reference scheme for lot-by-lot sampling by attributes, indexed by an acceptance quality limit. It is the right tool for an incoming carton of screws when looking at all of them is wasteful. It is the wrong tool, used alone, for a critical visual defect on a unit that is still singular and still in hand. The recipes in this work therefore mix the two traditions on purpose. Fill level, hole count, polarity and barcode grade are hundred-percent gates, because a single miss is a functional or legal failure. Shade on a fabric roll, and register on a fraction of cartons, remain sampled or audited, because the measurement is slower or less stable than the defect it supports. The camera does not repeal the sampling standard. It changes which characteristics still deserve it.</p>
 
-  <div class="rule"></div>
-  <p class="footer-meta">
-    LineSight LS-SYN-001 · Pipeline synthesis · HuskyLens 2 × RDK X5 8GB × MSME QC<br/>
-    Prepared for shop-floor review. Demo console implements stages 01–06 against a simulated feed.
-  </p>
+<h3>2.2 From hand-crafted vision to one-stage detectors</h3>
+<p>Industrial machine vision before deep networks was a discipline of lighting, thresholds, blobs, edges and template match. It works when the part is rigid, the light is owned by the cell, and the defect is a large deviation from a master. It struggles when the defect is a small stain on a textured weave, a hairline in glaze, or a tombstoned chip among many similar chips. Convolutional networks changed the feature step. He and colleagues showed that residual networks could be trained at depths that earlier plain networks could not (He, Zhang, Ren and Sun, 2016). Howard and colleagues showed that depthwise separable convolutions could move a useful network onto a device that does not have a workstation GPU (Howard et al., 2017). Those two results — accuracy that stacks, and arithmetic that fits — are the academic background of every current edge camera, including the K230 class.</p>
+<p>Object detection splits into two-stage and one-stage families. Faster R-CNN proposes regions and then classifies them (Ren, He, Girshick and Sun, 2015). It is accurate and, for a belt, often late. The You Only Look Once family collapses localisation and classification into one evaluation of the image (Redmon, Divvala, Girshick and Farhadi, 2016). YOLOv3 made the multi-scale version practical (Redmon and Farhadi, 2018). YOLOv4 systematised the bag of training tricks that production users actually needed (Bochkovskiy, Wang and Liao, 2020). Ultralytics YOLOv8 became the default starting point in industrial prototypes because training, export and a family of sizes ship together (Jocher, Chaurasia and Qiu, 2023). YOLOv9’s programmable gradient information is a further accuracy step on the common detection benchmark, not a reason by itself to put a large model on a 6&nbsp;TOPS camera (Wang, Yeh and Liao, 2024). Hussain’s review of convolutional networks and hardware accelerators for Industry&nbsp;4.0 places these variants in a sustainability frame: the useful model is the one whose latency, power and parameter count match the station, not the one that leads a leaderboard (Hussain, 2024).</p>
+
+<h3>2.3 Surface defects are not COCO objects</h3>
+<p>A systematic review of surface-defect inspection with object-detection networks makes the industrial gap explicit (Ma, Yin, Huang et al., 2024). Public detection benchmarks reward finding many categories of everyday objects. A fabric hole, a solder bridge and a glaze pinhole are small, class-imbalanced, and defined by a specification rather than by a name. The same review lists the open problems that a shop will meet in the first week: multiple scales, small defects, too few samples, and the tension between accuracy and speed at deployment. A parallel open-access survey of automated visual inspection in manufacturing and maintenance, covering 196 papers, finds convolutional networks still dominant, vision transformers rising, and a split in which maintenance cases outnumber manufacturing cases in the open literature (Hütten, Alves Gomes, Hölken, Andricevic, Meyes and Meisen, 2024). The practical reading is uncomfortable. The papers are ahead of the installed base in small plants, and the installed base is ahead of the papers in constraints the papers often omit: who labels the images after the engineer leaves, and who is allowed to stop the press.</p>
+<p>Instance segmentation is the right head when the defect has an area that enters a specification, as defect area in square millimetres does for cloth and edge-chip area does for tile. Mask R-CNN is the classical reference for that head (He, Gkioxari, Dollár and Girshick, 2017). On a 6&nbsp;TOPS device the deployed segmenter will be a smaller cousin, but the data contract is the same: a region, not only a box. Classification without a region is enough when the question is polarity or the presence of a cap. Optical character recognition and barcode decoding are different again. They fail closed. A pretty carton with an unreadable GS1 symbol is a failed unit under ISO/IEC 15416 print-quality practice, whatever the cosmetic score (ISO/IEC 15416:2016).</p>
+
+<h3>2.4 Colour, geometry, and the things a network should not invent</h3>
+<p>Shade is not a class name. Textile and ceramic lots are accepted or held on a colour difference against a master. CIEDE2000 is the formula the colour community settled on for small differences in the neighbourhood of a standard (Sharma, Wu and Dalal, 2005). A recipe that states “shade ΔE at most 1.8” is only meaningful if the illuminant, the geometry and the master are fixed. The fill lights on the HuskyLens&nbsp;2 are therefore part of the method, not an accessory. Changing the room lights and expecting the same ΔE is a known way to manufacture false fails.</p>
+<p>Length, hole position and label skew are geometry. A homography maps the image plane to the part plane when the part is approximately flat and the camera does not move relative to the nest (Hartley and Zisserman, 2004). The RDK’s role in this pipeline is exactly that mapping, plus the comparison to specification limits. Asking the detector to “learn millimetres” inside its weights couples the model to one fixture. Asking the board to apply a calibrated homography lets the same blocks serve the next fixture after a new checkerboard, which is the usual MSME situation.</p>
+
+<h3>2.5 Few labels, and why self-learning is in the design</h3>
+<p>Prototypical networks showed that a classifier can be built by comparing an embedding of the query to the mean embedding of a few support examples per class (Snell, Swersky and Zemel, 2017). The survey of Wang, Yao, Kwok and Ni (2020) organises the wider few-shot literature: data, model, and algorithm approaches, all motivated by the same fact that new classes arrive with almost no labels. HuskyLens self-learning classification is not that paper. It is a product feature with a button, a screen and a small support set. The literature still explains why the feature belongs in an MSME station. A new stain, a new burr, a new wrong-batch print will appear on a Tuesday. The operator who has the bad unit in hand is the only person who can label it that day. A pipeline that cannot absorb those labels until a dataset is exported, a GPU is rented and a model is re-flashed has already lost the week. The teach path in LineSight — gold versus defect, with an explicit deploy gate — is the console’s acknowledgement of that literature, implemented at the scale of one sensor.</p>
+
+<h3>2.6 Edge computers that can also act</h3>
+<p>Hussain (2024) reviews the accelerator side of machine vision: graphics processors, tensor accelerators, and field-programmable arrays, under a power budget. For this station the relevant published hardware facts are the vendor specifications, which should be cited as specifications and not as independent benchmarks. HuskyLens&nbsp;2 uses a Kendryte K230 dual-core RISC-V part, a 6&nbsp;TOPS accelerator, 1&nbsp;GB of LPDDR4, and a GC2093 2&nbsp;megapixel sensor specified at 60 frames per second, with USB-C and a Gravity UART/I2C port (DFRobot, 2026). The RDK&nbsp;X5 uses the D-Robotics Sunrise&nbsp;5 device: eight Cortex-A55 cores at 1.5&nbsp;GHz, one Bayes BPU rated at 10&nbsp;TOPS integer, a small GPU, up to 8&nbsp;GB of LPDDR4, four USB&nbsp;3.0 host ports, two four-lane MIPI camera inputs, CAN&nbsp;FD, and 28 general-purpose pins (D-Robotics, 2025). The combination is 16&nbsp;TOPS only if one adds the two ratings. Addition is not a benchmark. It is a statement that both devices have enough integer throughput for the jobs assigned to them in Section&nbsp;3, and that neither device is being asked to be a training server.</p>
+<p>The Model Context Protocol is a way for a tool to expose structured capabilities to a language-model client rather than forcing the model to parse a picture from scratch (Model Context Protocol specification, 2024–2025). HuskyLens&nbsp;2 ships an MCP service so that a client can receive semantic blocks instead of only pixels (DFRobot, 2026). This report uses that fact narrowly. The cycle-time path does not depend on a language model. The reasoning stage may consume a structured fail packet — recipe, blocks, measurements, verdict — which is the same idea as MCP: send the brief, not the bitmap. Doing so keeps tokens, latency and privacy off the per-unit path.</p>
+
+<h3>2.7 Gap</h3>
+<p>The literature above is strong on detectors, thinner on the joint design of a cheap camera, a policy computer and an operator who is not a vision engineer, and almost silent on what the station should do when the language model is unavailable. The gap this synthesis fills is that joint design: a published pair of boards, a recipe table for six MSME sectors, a decision rule that separates critical blocks from out-of-specification measurements from low-confidence holds, and a diagnosis path with a local fallback of the same shape. The next section states the method. It does not report a multi-site accuracy trial, because none has been run. Where numbers appear, they are either vendor specifications, recipe parameters, or properties of the labelled demonstration generator.</p>
+
+<h2>3. Methodology</h2>
+
+<h3>3.1 Hardware configuration</h3>
+<p>Table&nbsp;1 lists the station as specified. The sensor is powered at 3.3 to 5&nbsp;volts and draws about 1.5 to 3&nbsp;watts, so it can sit on a bracket without a separate industrial supply. Its 2.4&nbsp;inch 640 by 480 touch panel is the local human interface when the console is across the shop: an operator can confirm what the camera thinks it sees without opening a laptop. Fill lights are part of the optical method for colour recipes. An optional microscope lens is the intended optical change for SMT pads and fine print, not a software mode.</p>
+<p>The orchestrator runs Ubuntu on the eight A55 cores. Vision policy that needs a neural network beyond the K230 — a second view, a larger segmenter — can use the Bayes BPU. In the baseline station that network is optional. The board’s mandatory jobs are geometric and logical: homography, specification comparison, sampling counters, lot identity, and the reject output. USB&nbsp;3.0 is the primary path for frames when a still or a motion-JPEG stream is required. Gravity UART at 115200 baud is the block path and the fallback. CAN&nbsp;FD is the path into a press interlock on the metal recipe. GPIO is the path to a reject solenoid or a tower lamp. A second MIPI camera on the X5 is the planned way to add a side view without a second HuskyLens.</p>
+
+<table>
+  <caption>Table 1. Station hardware used by the pipeline.</caption>
+  <thead>
+    <tr><th>Item</th><th>HuskyLens 2 (SEN0638)</th><th>RDK X5, 8 GB</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Vendor device</td><td>DFRobot AI camera</td><td>D-Robotics robotics kit</td></tr>
+    <tr><td>Compute</td><td>Kendryte K230, dual-core, up to 1.6&nbsp;GHz; 6&nbsp;TOPS</td><td>8× Cortex-A55 at 1.5&nbsp;GHz; Bayes BPU 10&nbsp;TOPS INT8; GPU 32&nbsp;GFLOPS</td></tr>
+    <tr><td>Memory and storage</td><td>1&nbsp;GB LPDDR4; 8&nbsp;GB eMMC or TF</td><td>8&nbsp;GB LPDDR4; onboard NAND; microSD</td></tr>
+    <tr><td>Imager</td><td>GC2093, 2&nbsp;MP, 1/2.9&nbsp;inch, 60&nbsp;fps; replaceable lens</td><td>2× 4-lane MIPI CSI (optional second view)</td></tr>
+    <tr><td>Local UI</td><td>2.4&nbsp;inch IPS, 640×480, capacitive</td><td>HDMI up to 1080p60; MIPI DSI</td></tr>
+    <tr><td>Link</td><td>USB-C; Gravity 4-pin UART/I2C</td><td>4× USB&nbsp;3.0 host; USB&nbsp;2.0 device; UART debug</td></tr>
+    <tr><td>Actuation</td><td>None (sensor only)</td><td>CAN&nbsp;FD; 28× GPIO at 3.3&nbsp;V</td></tr>
+    <tr><td>Network</td><td>Optional 2.4&nbsp;GHz Wi-Fi module</td><td>Gigabit Ethernet; Wi-Fi&nbsp;6; Bluetooth&nbsp;5.4</td></tr>
+    <tr><td>Power</td><td>3.3–5&nbsp;V, about 1.5–3&nbsp;W</td><td>5&nbsp;V supply via USB-C, rated for the kit</td></tr>
+  </tbody>
+</table>
+<p class="note">Sources: DFRobot (2026) for the camera; D-Robotics RDK&nbsp;X5 product brief (2025) for the board. Ratings are vendor figures, not measurements taken on a LineSight bench.</p>
+
+<h3>3.2 Six stages</h3>
+<p><em>Capture.</em> The GC2093 integrates the scene at up to 60 frames per second. Exposure and the two fill lights are held constant for a recipe so that shade and fill-level pixels remain comparable across a lot. For a loom-end table the field is a strip of cloth; for a bracket it is the nest; for a board it may be the microscope field. The method does not auto-expose per unit. Auto-exposure would move the colour numbers and look like process drift.</p>
+<p><em>Edge vision.</em> The K230 runs the algorithm mix named by the recipe. The mixes used here are object recognition, object classification, instance segmentation, colour recognition, self-learning classification, optical character recognition, barcode and QR. The output is a set of blocks. A block has an identity, a label, a normalised box, a confidence, a kind (object, defect, barcode, or text), and an optional severity of minor, major or critical. The camera may also expose the same content as an MCP brief. The method does not require the raw video to cross the link on every unit.</p>
+<p><em>Transport.</em> Blocks travel on the HuskyLens V2 framing convention: a header of 0x55&nbsp;0xAA, a command, an algorithm identifier, a length, a payload and a checksum, over UART at 115200 baud, with USB&nbsp;3.0 available when a still is required for the teach thumbnail or for an audit. The demonstration’s link model uses a latency of roughly 6 to 8 milliseconds and a drop count of zero as the healthy state. A non-zero drop count is a station fault, not a quality fault of the unit.</p>
+<p><em>Fusion and policy.</em> The X5 applies the recipe. Pixel positions become millimetres through the current homography. Colour becomes a ΔE against the master. A fill contour becomes millilitres through a calibration curve. A hole count is a count. Each characteristic has an optional minimum, maximum and target. Sampling rules decide which characteristics are hundred-percent and which are audited. On a fail that the recipe marks as a reject, the board pulses GPIO or asserts the CAN interlock. The board, not the camera, owns that pulse, because the pulse is a plant action and the camera may be swapped.</p>
+<p><em>Verdict.</em> LineSight stamps pass, fail or hold, records the unit under the open lot, and allows an operator override. Override is deliberate. A camera miss is not corrected by silently flipping the bit; it is corrected by teaching, after a person has looked.</p>
+<p><em>Reasoning.</em> On request, a short packet — recipe name, stock-keeping unit, verdict, detections, measurements — is sent to the language model with a fixed instruction: four lines, cause, process, operator, corrective action, in shop language, without a lecture. The completion is capped. If the call is refused, the same four-line shape is produced locally from the recipe rules (missing hole, stain and shade, fill and cap, barcode and text, crack and chip, solder and polarity, or a generic defect). The local note says that it is local. Nobody should file it as a remote opinion.</p>
+
+<h3>3.3 Decision rule</h3>
+<p>Let a unit produce a set of defect blocks D and a set of measurements M. A measurement is out of specification when its value lies strictly below its minimum or strictly above its maximum. The demonstration generator draws a process-fail event with probability equal to the recipe fail rate. Only on that event does it place one or more defect blocks, chosen with the recipe weights, and only then may measurements leave their limits. Independently, a unit that is not a process fail is marked hold with probability 0.03, representing borderline confidence rather than a known defect. The verdict rule is then:</p>
+<p class="eq">fail if the process-fail event is true, or any block in D is critical, or any measurement is out of specification;</p>
+<p class="eq">else hold if the hold event is true; else pass.</p>
+<p>In the generator as written, critical blocks and out-of-specification measurements are nested inside the process-fail event, so the stamped fail rate equals the recipe fail rate, and the hold rate equals 0.03 times one minus that fail rate. On a plant the three terms are not nested. A critical block can appear when the process flag is unknown, and a measurement can leave its limit because of calibration rather than because a detector fired. The rule is written so that any one of the three is sufficient for fail. Hold is what remains when nothing is illegal but the station is not confident. Hold is not a quiet pass. The operator parks the unit.</p>
+<p>The unit score used on the console is a ranking aid, not a specification:</p>
+<p class="eq">score = clamp( 100 − 18·|D| − 14·(number of out-of-specification measurements) − 8·[verdict is hold] + ε , 12, 99.4 )</p>
+<p>where ε is a small seeded jitter in the demonstration and the clamp keeps a failed unit from reading as a perfect hundred or as zero. Eighteen points per defect block and fourteen per illegal measurement are presentation weights. They are not costs. A critical missing hole fails the unit even if, arithmetically, one block would only have moved the score from 100 to 82. The verdict, not the score, drives the reject pulse.</p>
+
+<h3>3.4 Recipes</h3>
+<p>Six recipes define the method’s coverage. Each names the sector, the example stock-keeping unit, the target inspect time, the generative fail rate used in the demonstration, the HuskyLens algorithm mix, the RDK policy, the specification table, the defect classes with severity and relative weight, and the sampling sentence. Table&nbsp;2 is the index. Tables&nbsp;3 and&nbsp;4 give the specifications and the defect classes. These figures are design parameters for a demonstration and a starting point for a plant recipe. They are not the outcome of a designed experiment.</p>
+
+<table>
+  <caption>Table 2. MSME recipes in the LineSight method.</caption>
+  <thead>
+    <tr><th>Sector</th><th>Unit</th><th>SKU</th><th>Cycle</th><th>Demo fail rate</th><th>Camera mix</th><th>Board policy</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Textiles</td><td>Woven fabric</td><td>TX-WOV-240</td><td>420&nbsp;ms</td><td>0.09</td><td>Instance segmentation, colour, classification</td><td>Shade ΔE, defect area, skip-lot on shade</td></tr>
+    <tr><td>Food and beverage</td><td>500&nbsp;ml bottle</td><td>PK-BTL-500</td><td>280&nbsp;ms</td><td>0.06</td><td>Object recognition, OCR, colour, barcode</td><td>Pixel-to-millilitre, cap GPIO reject, lot genealogy</td></tr>
+    <tr><td>Metal</td><td>Stamped bracket</td><td>MT-BRK-08</td><td>360&nbsp;ms</td><td>0.07</td><td>Object recognition, instance segmentation, classification</td><td>Homography, hole count, CAN reject to the press</td></tr>
+    <tr><td>Electronics</td><td>SMT board</td><td>EL-PCB-12A</td><td>510&nbsp;ms</td><td>0.05</td><td>Classification, object recognition, self-learning</td><td>Bill-of-materials overlay, polarity, hold for rework</td></tr>
+    <tr><td>Ceramics</td><td>300&nbsp;mm tile</td><td>CR-TIL-300</td><td>390&nbsp;ms</td><td>0.10</td><td>Instance segmentation, colour, classification</td><td>Crack length, shade lot, kiln feedback</td></tr>
+    <tr><td>Packaging print</td><td>Carton</td><td>PR-CTN-A4</td><td>310&nbsp;ms</td><td>0.08</td><td>OCR, barcode, QR, object recognition</td><td>Barcode grade, colour-to-colour register, reprint ticket</td></tr>
+  </tbody>
+</table>
+
+<table>
+  <caption>Table 3. Specification limits declared by each recipe.</caption>
+  <thead>
+    <tr><th>SKU</th><th>Characteristic</th><th>Unit</th><th>Minimum</th><th>Maximum</th><th>Target</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>TX-WOV-240</td><td>Shade ΔE</td><td>ΔE</td><td>—</td><td>1.8</td><td>0.4</td></tr>
+    <tr><td>TX-WOV-240</td><td>Defect area</td><td>mm²</td><td>—</td><td>12</td><td>0</td></tr>
+    <tr><td>TX-WOV-240</td><td>Ends per inch</td><td>epi</td><td>58</td><td>62</td><td>60</td></tr>
+    <tr><td>PK-BTL-500</td><td>Fill volume</td><td>ml</td><td>495</td><td>510</td><td>500</td></tr>
+    <tr><td>PK-BTL-500</td><td>Label skew</td><td>degree</td><td>—</td><td>1.5</td><td>0</td></tr>
+    <tr><td>PK-BTL-500</td><td>Cap gap proxy</td><td>pixel</td><td>—</td><td>4</td><td>1</td></tr>
+    <tr><td>MT-BRK-08</td><td>Overall length</td><td>mm</td><td>79.6</td><td>80.4</td><td>80</td></tr>
+    <tr><td>MT-BRK-08</td><td>Hole count</td><td>count</td><td>4</td><td>4</td><td>4</td></tr>
+    <tr><td>MT-BRK-08</td><td>Burr proxy</td><td>pixel</td><td>—</td><td>6</td><td>1</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Placed parts</td><td>count</td><td>18</td><td>18</td><td>18</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Solder bridges</td><td>count</td><td>—</td><td>0</td><td>0</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Polarity errors</td><td>count</td><td>—</td><td>0</td><td>0</td></tr>
+    <tr><td>CR-TIL-300</td><td>Crack length</td><td>mm</td><td>—</td><td>0</td><td>0</td></tr>
+    <tr><td>CR-TIL-300</td><td>Shade ΔE</td><td>ΔE</td><td>—</td><td>1.2</td><td>0.3</td></tr>
+    <tr><td>CR-TIL-300</td><td>Edge chip area</td><td>mm²</td><td>—</td><td>4</td><td>0</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Register error</td><td>mm</td><td>—</td><td>0.4</td><td>0.1</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Barcode grade</td><td>ISO grade</td><td>3</td><td>4</td><td>3.5</td></tr>
+    <tr><td>PR-CTN-A4</td><td>OCR match</td><td>percent</td><td>98</td><td>100</td><td>100</td></tr>
+  </tbody>
+</table>
+
+<table>
+  <caption>Table 4. Defect classes, severity and relative weight inside a process fail.</caption>
+  <thead>
+    <tr><th>SKU</th><th>Class</th><th>Severity</th><th>Weight</th><th>Sampling sentence</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>TX-WOV-240</td><td>Weft stain</td><td>Major</td><td>0.35</td><td rowspan="4">Hundred-percent visual; AQL 1.5 on shade</td></tr>
+    <tr><td>TX-WOV-240</td><td>Pin hole</td><td>Critical</td><td>0.20</td></tr>
+    <tr><td>TX-WOV-240</td><td>Slub</td><td>Minor</td><td>0.25</td></tr>
+    <tr><td>TX-WOV-240</td><td>Shade band</td><td>Major</td><td>0.20</td></tr>
+    <tr><td>PK-BTL-500</td><td>Underfill</td><td>Critical</td><td>0.30</td><td rowspan="4">Hundred-percent fill and cap; one-in-ten OCR audit</td></tr>
+    <tr><td>PK-BTL-500</td><td>Missing cap</td><td>Critical</td><td>0.15</td></tr>
+    <tr><td>PK-BTL-500</td><td>Label skew</td><td>Major</td><td>0.35</td></tr>
+    <tr><td>PK-BTL-500</td><td>Seal wrinkle</td><td>Minor</td><td>0.20</td></tr>
+    <tr><td>MT-BRK-08</td><td>Missing hole</td><td>Critical</td><td>0.25</td><td rowspan="4">Hundred-percent holes; five pieces per hour on the CMM</td></tr>
+    <tr><td>MT-BRK-08</td><td>Edge burr</td><td>Major</td><td>0.30</td></tr>
+    <tr><td>MT-BRK-08</td><td>Face dent</td><td>Major</td><td>0.25</td></tr>
+    <tr><td>MT-BRK-08</td><td>Length out of specification</td><td>Critical</td><td>0.20</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Missing 0805</td><td>Critical</td><td>0.30</td><td rowspan="4">Hundred-percent first article, then hundred-percent AOI</td></tr>
+    <tr><td>EL-PCB-12A</td><td>IC polarity</td><td>Critical</td><td>0.20</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Solder bridge</td><td>Major</td><td>0.30</td></tr>
+    <tr><td>EL-PCB-12A</td><td>Tombstone</td><td>Major</td><td>0.20</td></tr>
+    <tr><td>CR-TIL-300</td><td>Hairline crack</td><td>Critical</td><td>0.30</td><td rowspan="4">Hundred-percent face; ten percent edge gauge</td></tr>
+    <tr><td>CR-TIL-300</td><td>Glaze pinhole</td><td>Minor</td><td>0.25</td></tr>
+    <tr><td>CR-TIL-300</td><td>Edge chip</td><td>Major</td><td>0.25</td></tr>
+    <tr><td>CR-TIL-300</td><td>Shade drift</td><td>Major</td><td>0.20</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Misregister</td><td>Major</td><td>0.30</td><td rowspan="4">Hundred-percent barcode; one-in-twenty register check</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Unreadable barcode</td><td>Critical</td><td>0.25</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Ink void</td><td>Major</td><td>0.25</td></tr>
+    <tr><td>PR-CTN-A4</td><td>Wrong batch text</td><td>Critical</td><td>0.20</td></tr>
+  </tbody>
+</table>
+
+<h3>3.5 Teach set</h3>
+<p>A teach sample is a thumbnail plus a label of gold or defect, tied to the recipe. The method does not deploy a self-learning head on the K230 until at least four gold and four defect samples exist, and it treats eight and eight as the preferred set before any confidence threshold is raised. This is a procedural control against the failure mode Wang and colleagues describe in general terms and every small plant rediscovers: a one-class “good” set that calls every new stain an outlier, or a defect set of two dramatic examples that misses the ordinary ones (Wang, Yao, Kwok and Ni, 2020). The console shows the counts. Deploy is a separate action from capture, so a curious press of a button during setup does not overwrite a head that is already on the line.</p>
+
+<h3>3.6 Lots, Pareto, and what is stored</h3>
+<p>Units belong to a lot. The lot carries the recipe, a start time, and the sequence of verdicts. Yield is the pass count divided by the unit count, reported with the fail count and the hold count beside it, because a high pass rate that hides a large hold pile is not a healthy station. Defect Pareto counts defect-block labels across the lot and sorts them. It is the classical Pareto step applied to detector labels: the first class in the list is the class worth a process conversation. The demonstration keeps this state in the session. A plant system would persist it. The method does not put personal data in that record. Operator identity, if added later, is an account problem and is out of scope for the present console.</p>
+
+<h3>3.7 How the demonstration is allowed to be used</h3>
+<p>The in-browser station draws a synthetic scene from the same recipe and the same verdict, and it animates plausible camera and board loads. It is a tool for walking the six stages, teaching the console, and checking that a recipe’s limits and defect names appear where an operator expects them. It is not a source of detection precision or recall. Any number in Section&nbsp;4 that comes from the generator is labelled as a property of the generator. Vendor timings and vendor TOPS figures are labelled as vendor figures. No blended “accuracy” is computed from the two.</p>
+
+<h2>4. Analysis</h2>
+
+<h3>4.1 What the generator implies for yield</h3>
+<p>Because hold is drawn only on units that are not process fails, the demonstration’s long-run fractions are determined by two parameters. Table&nbsp;5 states them. Pass fraction is (1 − f)(1 − 0.03), hold fraction is (1 − f)(0.03), and fail fraction is f, where f is the recipe fail rate. Ceramics, at f = 0.10, is the weakest generative yield, near 87&nbsp;percent pass, which matches a face-inspection process that still sees cracks and shade as ordinary rather than rare. The SMT recipe is the tightest generative fail rate, 5&nbsp;percent, with pass near 92&nbsp;percent, on the argument that a placed board is already the product of a printer and a placer and the vision gate is the last screen, not the only screen. These are planning numbers for the demo lot. A real ceramic kiln week can be better or worse. The table is useful because it makes the hold pile visible: even a clean recipe carries about 2.7 to 2.9 holds per hundred units, which is enough to need a physical hold rail and a rule for who clears it.</p>
+
+<table>
+  <caption>Table 5. Long-run verdict mix of the demonstration generator.</caption>
+  <thead>
+    <tr><th>SKU</th><th>Fail rate f</th><th>Pass</th><th>Hold</th><th>Fail</th><th>Pass per 1&nbsp;000</th><th>Hold per 1&nbsp;000</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>TX-WOV-240</td><td>0.09</td><td>0.883</td><td>0.027</td><td>0.09</td><td>883</td><td>27</td></tr>
+    <tr><td>PK-BTL-500</td><td>0.06</td><td>0.912</td><td>0.028</td><td>0.06</td><td>912</td><td>28</td></tr>
+    <tr><td>MT-BRK-08</td><td>0.07</td><td>0.902</td><td>0.028</td><td>0.07</td><td>902</td><td>28</td></tr>
+    <tr><td>EL-PCB-12A</td><td>0.05</td><td>0.922</td><td>0.029</td><td>0.05</td><td>922</td><td>29</td></tr>
+    <tr><td>CR-TIL-300</td><td>0.10</td><td>0.873</td><td>0.027</td><td>0.10</td><td>873</td><td>27</td></tr>
+    <tr><td>PR-CTN-A4</td><td>0.08</td><td>0.892</td><td>0.028</td><td>0.08</td><td>892</td><td>28</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 Cycle time and the line rate it can support</h3>
+<p>Table&nbsp;6 converts the recipe inspect time into a single-station rate, ignoring transfer time. The bottle recipe, at 280&nbsp;milliseconds, supports about 214 units per minute if the filler presents a unit that often. The SMT recipe, at 510&nbsp;milliseconds, supports about 118 boards per minute, which is above many small placers and below a high-speed chip shooter. The method is therefore sized for the MSME machine, not for a beverage plant running tens of thousands of bottles an hour with an array of cameras. Jitter in the demonstration is about ±40&nbsp;milliseconds around the recipe time, from the same seed family as the rest of the draw. Link latency of 6 to 8&nbsp;milliseconds is a few percent of the cycle. It is not the term to optimise first. Lighting stability, nest repeatability and the time the operator spends on a hold are larger.</p>
+<p>A language-model call is not in this budget. A completion of a few hundred tokens, even when fast, is a human-scale pause. Placing it after the verdict, and only on request, means the solenoid does not wait for prose. The local four-line note is the method’s way of keeping that property when the remote call fails. The analysis consequence is simple: diagnosis throughput is an operator rate, perhaps a few calls a shift, whereas inspection throughput is a machine rate. Mixing the two in one service-level number would be a category error.</p>
+
+<table>
+  <caption>Table 6. Single-station rate implied by the recipe cycle, before transfer time.</caption>
+  <thead>
+    <tr><th>SKU</th><th>Inspect time</th><th>Units per second</th><th>Units per minute</th><th>Units per hour</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>PK-BTL-500</td><td>280&nbsp;ms</td><td>3.57</td><td>214</td><td>12&nbsp;860</td></tr>
+    <tr><td>PR-CTN-A4</td><td>310&nbsp;ms</td><td>3.23</td><td>194</td><td>11&nbsp;610</td></tr>
+    <tr><td>MT-BRK-08</td><td>360&nbsp;ms</td><td>2.78</td><td>167</td><td>10&nbsp;000</td></tr>
+    <tr><td>CR-TIL-300</td><td>390&nbsp;ms</td><td>2.56</td><td>154</td><td>9&nbsp;230</td></tr>
+    <tr><td>TX-WOV-240</td><td>420&nbsp;ms</td><td>2.38</td><td>143</td><td>8&nbsp;570</td></tr>
+    <tr><td>EL-PCB-12A</td><td>510&nbsp;ms</td><td>1.96</td><td>118</td><td>7&nbsp;060</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 Where the arithmetic goes</h3>
+<p>The camera’s 6&nbsp;TOPS budget is spent on the algorithm mix, which differs by recipe. Segmentation plus colour plus classification (cloth, tile) is heavier than object recognition plus a barcode decode (carton, bottle). The board’s 10&nbsp;TOPS budget is mostly idle in the baseline, because homography and limit checks are ordinary arithmetic on eight A55 cores. That idleness is a feature. It is the reserve for a second MIPI view, a heavier segmenter, or a short burst when the operator opens a still. Designing the station so that both devices sit at full load on every pass would leave no margin for the moment the cloth changes colour or the nest is moved.</p>
+<p>Power is part of the same argument. A camera at a few watts plus a small single-board computer is a different electrical object from a workstation-class cell. Hussain’s sustainability framing is relevant here even without a life-cycle inventory: the station that can be powered from the machine’s existing low-voltage rail is the station that gets installed (Hussain, 2024). No watt-hour total is claimed in this report, because none was measured.</p>
+
+<h3>4.4 Severity, score, and a worked fail</h3>
+<p>Consider a stamped bracket drawn as a process fail with a single critical “missing hole” block and one illegal length. The verdict is fail for two independent reasons: a critical block, and a measurement outside 79.6 to 80.4&nbsp;mm. The score moves by 18 for the block and 14 for the measurement, before jitter, so it lands near the high sixties rather than near zero. That is intentional. The score is a sort key for the lot view. The red stamp and the CAN bit are the decision. A second fail with three minor blocks and no illegal measurement can score lower and still be, in specification terms, a less serious unit. Operators should be taught this, or they will chase the score and ignore the class. The Pareto view exists so the conversation stays on class counts: how many missing holes this lot, not how picturesque the score chart is.</p>
+<p>The weights in Table&nbsp;4 change which class appears when a fail is drawn. On the bottle recipe, label skew (weight 0.35) will outnumber missing caps (weight 0.15) inside the fail pile if the generator is left as it is. On a real filler, missing caps may be rarer still, or they may arrive in bursts when the chute starves. The generator has no burst term. A plant chart that shows isolated missing caps is a different process from a plant chart that shows ten in a row. The method’s Pareto is capable of showing the burst once the blocks are real. The demonstration should not be quoted as evidence that skew is the dominant bottle defect in the industry. It is evidence that the console will rank whatever the camera sends.</p>
+
+<h3>4.5 Sampling sentences are doing real work</h3>
+<p>Hundred-percent inspection of every characteristic is not free, and several characteristics in Table&nbsp;3 are poor candidates for it. Ends per inch on a moving cloth, a five-piece-per-hour check on a coordinate measuring machine, and a one-in-twenty register check are audits of a slower instrument against the camera, not second copies of the same measurement. The method uses them as a calibration leash. If the camera’s length and the CMM’s length diverge, the homography or the nest is wrong, and no amount of detector confidence repairs that. ISO 2859-1 remains available for the shade audit on cloth, where the recipe already names an acceptance quality limit of 1.5. The analysis point is that the pipeline is not “deep learning instead of standards.” It is deep learning for the characteristics that are visual and fast, and the existing standard for the characteristics that are still a sample.</p>
+
+<h3>4.6 False fails, false passes, and hold</h3>
+<p>Ma and colleagues list small defects and scarce labels as open problems (Ma et al., 2024). Both appear here as operating risks rather than as papers. A pin hole near the resolution limit of a 2&nbsp;megapixel view of a wide cloth will be missed if the lens and the field of view were chosen for the whole width. The method’s answer is optical, not rhetorical: narrow the field, or add the microscope lens, or accept that this station watches a sampled strip. A false fail on shade after someone opened a skylight is a lighting-control failure. The method’s answer is to freeze exposure and fill lights and to recalibrate colour at the start of the shift, which is what the local diagnosis text already tells the operator to do.</p>
+<p>Hold is the residual class for the cases the rule will not force. Raising the confidence threshold to empty the hold rail, before the teach set is balanced, converts uncertainty into false passes. The console therefore couples the threshold change to the teach counts. This is a product decision aligned with the few-shot caution in Section&nbsp;2.5, not an extra feature.</p>
+
+<h3>4.7 Language-model failure is a specified state</h3>
+<p>The remote diagnosis call can be absent, refused, or quota-limited. The method treats that as a normal state. The local note is template-driven from the top defect label and the first illegal measurement. It is narrower than a general model: it knows holes, stains, fill and caps, codes, cracks, and solder, and it falls through to a generic compare-with-gold instruction otherwise. The advantage is determinism. The disadvantage is coverage. A novel defect is told to be taught, which is the correct MSME action, and is not given a fabricated metallurgical theory. Analysis of this fallback matters more than a demonstration of a fluent paragraph, because the fluent paragraph is the path that will be down on the day the network is down.</p>
+
+<h3>4.8 Cost position, stated carefully</h3>
+<p>A packaged AOI cell is priced as a machine. This station is priced as a camera, a single-board computer, a light, a bracket, a valve and an enclosure. Public camera pricing for HuskyLens&nbsp;2 has been on the order of a hundred US dollars rather than several thousand; the board is a development kit, not a certified industrial controller. This report does not add those figures into a return-on-investment claim. It records the structural point. The bill of materials can be carried by a shop that will not buy a cell, provided someone on that shop accepts the open items in the conclusion: calibration, a real reject wiring diagram, and a persistence story for lots. A cheap undefined station is not cheaper. It is unfinished.</p>
+
+<h3>4.9 What the demonstration does not show</h3>
+<p>It does not show precision, recall, or a confusion matrix against labelled plant images. It does not show gauge repeatability. It does not show that the UART path sustains zero drops next to a press drive. It does not show thermal drift of the K230 over an eight-hour shift, although the console’s temperature trace is there to remind the operator that the number exists. It does not show that eight gold and eight defect thumbnails are sufficient for a given class; that sufficiency is empirical and class-specific. Readers who need those results need a bench, a part, and a designed sample. The demonstration’s job is to make the data contract and the operator loop concrete enough that the bench study has a target.</p>
+
+<h2>5. Conclusion</h2>
+<p>The pipeline synthesised in this report is a three-tier edge station for visual quality gates in micro, small and medium plants. HuskyLens&nbsp;2, on a Kendryte K230 with 6&nbsp;TOPS and a 2&nbsp;megapixel sensor, owns capture and the perceptual blocks: recognition, classification, segmentation, colour, codes and a self-learning head. RDK&nbsp;X5, on a Sunrise&nbsp;5 device with 8&nbsp;GB of memory and a 10&nbsp;TOPS BPU, owns policy: homography, specification limits, sampling, lot identity, and the GPIO or CAN reject. LineSight owns the person: pass, fail, hold, override, teach, Pareto, and an on-demand cause-and-action note that degrades to a local note of the same shape when the language model is unavailable.</p>
+<p>The literature supports the split. Hundred-percent inspection does not replace statistical control of the process (Shewhart, 1931; Deming, 1986; Montgomery, 2019), so the station is specified as a sensor into recipes and Pareto counts, not as the quality system. One-stage detectors and small convolutional networks are the right family for a belt and a few TOPS (Redmon et al., 2016; Howard et al., 2017; Jocher, Chaurasia and Qiu, 2023), and the industrial defect literature is clear that small defects and scarce labels remain the hard part (Ma et al., 2024; Hütten et al., 2024). Few-shot teaching is the practical response to scarce labels (Snell, Swersky and Zemel, 2017; Wang et al., 2020). Colour difference and barcode grade stay in their own standards (Sharma, Wu and Dalal, 2005; ISO/IEC 15416:2016), and geometry stays in a calibrated homography (Hartley and Zisserman, 2004), because those quantities should not be buried in weights that change every time the fixture moves.</p>
+<p>The method is concrete enough to count. Six recipes cover cloth, bottles, brackets, boards, tile and cartons, with inspect times from 280 to 510&nbsp;milliseconds and generative fail rates from 5 to 10&nbsp;percent. The verdict fails on a critical block or any illegal measurement, holds on residual low confidence, and otherwise passes. The score is a sort key. The reject bit follows the verdict. Diagnosis is outside the cycle. The demonstration implements that contract and does not impersonate a plant trial.</p>
+<p>For a shop that builds the station, the open work is physical and procedural. Calibrate the homography on the real nest. Freeze the lights. Map one GPIO bit to the valve and one CAN frame to the press, and debounce a run of fails into a line stop rather than a lamp that everyone learns to ignore. Balance the teach set before tightening confidence. Persist lots somewhere the next shift can read. Keep the language model on the shop network, on demand, and keep the local note for the day the network is not there. None of those steps changes the architecture. They are how the architecture becomes a gate.</p>
+<p>The conclusion, in one line, is the approach stated at the start. The camera sees the unit. The board applies the specification and can stop the unit. The person teaches, overrides, and asks why. That is a complete quality loop for a short MSME line, and it does not require a cloud in the middle of it.</p>
+
+<h2>References</h2>
+<p class="hang">Bochkovskiy, A., Wang, C.-Y., and Liao, H.-Y. M. (2020). YOLOv4: Optimal speed and accuracy of object detection. arXiv:2004.10934.</p>
+<p class="hang">D-Robotics. (2025). RDK X5 product brief (V1.0 / V1.1). Sunrise 5, octa-core Cortex-A55, Bayes BPU 10 TOPS, up to 8 GB LPDDR4. D-Robotics Holding Limited. Developer documentation: https://developer.d-robotics.cc/</p>
+<p class="hang">Deming, W. E. (1986). Out of the Crisis. Cambridge, MA: MIT Press.</p>
+<p class="hang">DFRobot. (2026). HUSKYLENS 2 AI vision sensor, SEN0638 / SEN0638-TF. Kendryte K230, 6 TOPS, GC2093, MCP service. Product specification: https://www.dfrobot.com/product-3078.html</p>
+<p class="hang">Hartley, R., and Zisserman, A. (2004). Multiple View Geometry in Computer Vision (2nd ed.). Cambridge: Cambridge University Press.</p>
+<p class="hang">He, K., Gkioxari, G., Dollár, P., and Girshick, R. (2017). Mask R-CNN. In Proceedings of the IEEE International Conference on Computer Vision, pp. 2961–2969.</p>
+<p class="hang">He, K., Zhang, X., Ren, S., and Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pp. 770–778.</p>
+<p class="hang">Howard, A. G., Zhu, M., Chen, B., Kalenichenko, D., Wang, W., Weyand, T., Andreetto, M., and Adam, H. (2017). MobileNets: Efficient convolutional neural networks for mobile vision applications. arXiv:1704.04861.</p>
+<p class="hang">Hussain, M. (2024). Sustainable machine vision for Industry 4.0: A comprehensive review of convolutional neural networks and hardware accelerators in computer vision. AI, 5(3), 1324–1356. https://doi.org/10.3390/ai5030064</p>
+<p class="hang">Hütten, N., Alves Gomes, M., Hölken, F., Andricevic, K., Meyes, R., and Meisen, T. (2024). Deep learning for automated visual inspection in manufacturing and maintenance: A survey of open-access papers. Applied System Innovation, 7(1), 11. https://doi.org/10.3390/asi7010011</p>
+<p class="hang">ISO 2859-1:1999. Sampling procedures for inspection by attributes — Part 1: Sampling schemes indexed by acceptance quality limit (AQL) for lot-by-lot inspection. Geneva: International Organization for Standardization.</p>
+<p class="hang">ISO/IEC 15416:2016. Automatic identification and data capture techniques — Bar code print quality test specification — Linear symbols. Geneva: ISO/IEC.</p>
+<p class="hang">Jocher, G., Chaurasia, A., and Qiu, J. (2023). Ultralytics YOLO (version 8). https://github.com/ultralytics/ultralytics</p>
+<p class="hang">Ma, Y., Yin, J., Huang, F., et al. (2024). Surface defect inspection of industrial products with object detection deep networks: a systematic review. Artificial Intelligence Review, 57, 333. https://doi.org/10.1007/s10462-024-10956-3</p>
+<p class="hang">Model Context Protocol. (2024–2025). Specification. https://modelcontextprotocol.io</p>
+<p class="hang">Montgomery, D. C. (2019). Introduction to Statistical Quality Control (8th ed.). Hoboken, NJ: Wiley.</p>
+<p class="hang">Redmon, J., Divvala, S., Girshick, R., and Farhadi, A. (2016). You Only Look Once: Unified, real-time object detection. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition, pp. 779–788.</p>
+<p class="hang">Redmon, J., and Farhadi, A. (2018). YOLOv3: An incremental improvement. arXiv:1804.02767.</p>
+<p class="hang">Ren, S., He, K., Girshick, R., and Sun, J. (2015). Faster R-CNN: Towards real-time object detection with region proposal networks. Advances in Neural Information Processing Systems, 28.</p>
+<p class="hang">Sharma, G., Wu, W., and Dalal, E. N. (2005). The CIEDE2000 color-difference formula: Implementation notes, supplementary test data, and mathematical observations. Color Research and Application, 30(1), 21–30.</p>
+<p class="hang">Shewhart, W. A. (1931). Economic Control of Quality of Manufactured Product. New York: D. Van Nostrand.</p>
+<p class="hang">Snell, J., Swersky, K., and Zemel, R. (2017). Prototypical networks for few-shot learning. Advances in Neural Information Processing Systems, 30.</p>
+<p class="hang">Wang, C.-Y., Yeh, I.-H., and Liao, H.-Y. M. (2024). YOLOv9: Learning what you want to learn using programmable gradient information. arXiv:2402.13616.</p>
+<p class="hang">Wang, Y., Yao, Q., Kwok, J. T., and Ni, L. M. (2020). Generalizing from a few examples: A survey on few-shot learning. ACM Computing Surveys, 53(3), Article 63.</p>
+
 </body>
 </html>
